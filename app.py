@@ -17,10 +17,12 @@ def create_app():
     from routes.auth import auth_bp
     from routes.complaints import complaints_bp
     from routes.reports import reports_bp
+    from routes.users import users_bp
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(complaints_bp, url_prefix='/api/complaints')
     app.register_blueprint(reports_bp, url_prefix='/api/reports')
+    app.register_blueprint(users_bp, url_prefix='/api/users')
 
     @app.route('/api/health')
     def health():

@@ -26,6 +26,22 @@ class User:
         return User.collection().find_one({'_id': ObjectId(user_id)})
 
     @staticmethod
+    def find_all(filters=None):
+        q = filters or {}
+        return list(User.collection().find(q).sort('created_at', -1))
+
+    @staticmethod
+    def delete_by_id(user_id):
+        from bson.objectid import ObjectId
+        return User.collection().delete_one({'_id': ObjectId(user_id)})
+
+    @staticmethod
+    def update_by_id(user_id, data):
+        from bson.objectid import ObjectId
+        User.collection().update_one({'_id': ObjectId(user_id)}, {'$set': data})
+        return User.find_by_id(user_id)
+
+    @staticmethod
     def verify_password(stored, provided):
         return check_password_hash(stored, provided)
 

@@ -24,7 +24,7 @@ def register():
         'phone': data['phone'],
         'ward': data.get('ward', ''),
         'password': data['password'],
-        'role': data.get('role', 'citizen')
+        'role': 'citizen'
     }
 
     user = User.create(user_data)
