@@ -48,8 +48,23 @@ def login():
         return jsonify({'error': 'Email and password are required'}), 400
 
     user = User.find_by_email(data['email'])
+
+    if user and user.get('locked'):
+        return jsonify({'error': 'Account is blocked due to too many failed login attempts.'}), 403
+
     if not user or not User.verify_password(user['password'], data['password']):
-        return jsonify({'error': 'Invalid email or password'}), 401
+        if user:
+            attempts = user.get('login_attempts', 0) + 1
+            if attempts >= 3:
+                User.collection().update_one({'_id': user['_id']}, {'$set': {'login_attempts': attempts, 'locked': True}})
+                return jsonify({'error': 'Wrong password. Account has been blocked due to too many failed attempts.'}), 403
+            else:
+                User.collection().update_one({'_id': user['_id']}, {'$set': {'login_attempts': attempts}})
+                remaining = 3 - attempts
+                return jsonify({'error': f'Wrong password. {remaining} attempt(s) remaining.'}), 401
+        return jsonify({'error': 'Wrong password.'}), 401
+
+    User.collection().update_one({'_id': user['_id']}, {'$set': {'login_attempts': 0}})
 
     token = User.generate_token(user['_id'], user['role'])
 

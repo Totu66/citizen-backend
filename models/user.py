@@ -13,6 +13,8 @@ class User:
     def create(data):
         data['password'] = generate_password_hash(data['password'])
         data['created_at'] = datetime.datetime.now(datetime.UTC)
+        data['login_attempts'] = 0
+        data['locked'] = False
         result = User.collection().insert_one(data)
         return User.collection().find_one({'_id': result.inserted_id})
 

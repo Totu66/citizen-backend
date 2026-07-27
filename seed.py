@@ -20,6 +20,8 @@ with app.app_context():
             'ward': 'Londiani',
             'password': generate_password_hash('admin123'),
             'role': 'admin',
+            'login_attempts': 0,
+            'locked': False,
             'created_at': datetime.datetime.utcnow()
         })
         print('Admin user created: admin@londiani.go.ke / admin123')
@@ -33,6 +35,8 @@ with app.app_context():
             'ward': 'Kedowa',
             'password': generate_password_hash('citizen123'),
             'role': 'citizen',
+            'login_attempts': 0,
+            'locked': False,
             'created_at': datetime.datetime.utcnow()
         })
         print('Test citizen created: citizen@test.com / citizen123')
